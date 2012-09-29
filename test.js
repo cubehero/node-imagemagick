@@ -3,6 +3,17 @@ var fs = require('fs'),
 
 var path = __dirname+'/sample-images/blue-bottle-coffee.jpg';
 var imdata = fs.readFileSync(path, 'binary');
+var gifpath = __dirname + '/sample-images/clap.gif';
+
+im.identify(gifpath, function(err, features){
+    if(err) return console.error('error',err.stack || err);
+    console.log(features);
+});
+
+im.identify(path, function(err, features){
+    if(err) return console.error(err.stack || err);
+    console.log(features);
+});
 
 im.identify(path, function (err, features){
   if (err) return console.error(err.stack || err);
@@ -26,9 +37,9 @@ im.readMetadata({data:imdata}, function (err, metadata){
 
 var timeStarted = new Date;
 im.resize({
-  srcPath: path,
+  srcPath: gifpath,
   dstPath: 'test-resized.jpg',
-  width: 256
+  width: 92
 }, function (err, stdout, stderr){
   if (err) return console.error(err.stack || err);
   console.log('resize(...) wrote "test-resized.jpg"');

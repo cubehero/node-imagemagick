@@ -1,6 +1,5 @@
 var childproc = require('child_process'),
-    EventEmitter = require('events').EventEmitter
-  , imParse = require('imagemagick-identify-parser');
+    EventEmitter = require('events').EventEmitter;
 
 
 function exec2(file, args /*, options, callback */) {
@@ -98,9 +97,33 @@ function exec2(file, args /*, options, callback */) {
   return child;
 };
 
-
+/**
+ * A much simpler version of parseIdentify
+ * since all we are doing is getting 4 values.
+ * Also much less error prone due to histogram formatting
+ *
+ * @param input
+ * @return {Object}
+ */
 function parseIdentify(input) {
-  return imParse(input, true);
+    var result = {}
+      , keys = ['geometry','format','depth','quality']
+      , length = keys.length;
+
+    // All we need is geometry, format, depth, and quaility
+    // search each line for those values
+    for(var i = 0; i < length; i++) {
+        try{
+            var pattern = new RegExp(keys[i] +': (.*)','i');
+            var matches = input.match(pattern);
+            if(matches) {
+                result[keys[i]] = matches[1];
+            }
+        } catch(e) {
+            console.error(e);
+        }
+    }
+    return result;
 };
 
 exports.identify = function(pathOrArgs, callback) {
